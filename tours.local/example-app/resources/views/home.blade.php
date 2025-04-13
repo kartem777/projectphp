@@ -3,38 +3,40 @@
 @section('title', 'Home Page')
 
 @section('content')
-    <div class="text-center">
-        <h1>Welcome to Our Travel Agency</h1>
-        <p class="lead">Explore the best tours and hot destinations with us.</p>
-    </div>
+<h1>Name of Company</h1>
+<div class="row">
+    @foreach($tours as $tour)
+        <div class="col-md-3 mb-4"> <!-- Adjust the col-md value to control the width of the cards -->
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">{{ $tour->title }}</h2>
+                    <p class="card-text">{{ $tour->description }}</p>
+                    <p><strong>City:</strong> {{ $tour->city }}, <strong>Country:</strong> {{ $tour->country }}</p>
+                    <p><strong>Price:</strong> ${{ $tour->price }}</p>
+                    <p><strong>Dates:</strong> {{ $tour->start_date }} to {{ $tour->end_date }}</p>
+                    <p><strong>Places left:</strong> {{ $tour->places }}</p>
+                    <p>
+                        <strong>Hot Offer:</strong>
+                        @if($tour->is_hot_offer)
+                            <span class="text-danger">🔥 Yes!</span>
+                        @else
+                            <span class="text-muted">❄️ Not really</span>
+                        @endif
+                    </p>
 
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="Tour 1">
-                <div class="card-body">
-                    <h5 class="card-title">Tour 1</h5>
-                    <p class="card-text">An exciting journey to beautiful places.</p>
+                    <div class="row">
+                        @foreach($tour->images as $index => $image)
+                            @if($index == 0)
+                                <div class="col-12">
+                                    <img src="{{ $image->url }}" alt="Tour Image" class="img-fluid" style="max-height: 200px; object-fit: cover;">
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="Tour 2">
-                <div class="card-body">
-                    <h5 class="card-title">Tour 2</h5>
-                    <p class="card-text">A breathtaking adventure to unforgettable destinations.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <img src="https://via.placeholder.com/350x200" class="card-img-top" alt="Tour 3">
-                <div class="card-body">
-                    <h5 class="card-title">Tour 3</h5>
-                    <p class="card-text">Discover exotic locations and hidden gems.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endforeach
+</div>
+
 @endsection

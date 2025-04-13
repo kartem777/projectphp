@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\TourController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('home');
-});
+});*/
+Route::get('/', [TourController::class, 'home']);
 Route::get('/documentation', function () {
     return view('welcome');
 });
+Route::get('/tours', [TourController::class, 'allinfo']);

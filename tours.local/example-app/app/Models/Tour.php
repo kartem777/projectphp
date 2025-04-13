@@ -14,6 +14,11 @@ class Tour extends Model
         'price', 'start_date', 'end_date', 'places', 'title', 'description', 'city', 'country'
     ];
 
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
     protected $appends = ['is_hot_offer'];
 
     public function bookings() {
