@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\AdminController;
+use App\Http\Middleware\AdminMiddleware;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,21 +20,19 @@ Route::get('/documentation', function () {
     return view('welcome');
 });
 Route::get('/tours', [TourController::class, 'allinfo']);
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    
+
     Route::get('/tours/index', [TourController::class, 'allinfoadmin'])->name('tours.index');
-    
     Route::get('/tours/create', [TourController::class, 'create'])->name('tours.create');
-    
     Route::post('/tours', [TourController::class, 'store'])->name('tours.store');
-    
     Route::get('/tours/{id}/edit', [TourController::class, 'edit'])->name('tours.edit');
-    
     Route::put('/tours/{id}', [TourController::class, 'update'])->name('tours.update');
-    
     Route::get('/tours/{id}', [TourController::class, 'show'])->name('tours.show');
-    
     Route::delete('/tours/{id}', [TourController::class, 'destroy'])->name('tours.destroy');
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

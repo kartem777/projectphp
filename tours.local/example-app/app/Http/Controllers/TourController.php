@@ -17,7 +17,7 @@ class TourController extends Controller
     }
     public function home(){
         $tours = Tour::orderBy('id', 'desc')->take(3)->get();
-        return view('home', compact('tours'));
+        return view('index', compact('tours'));
     }
      public function create() {
         return view('admin.tours.create');

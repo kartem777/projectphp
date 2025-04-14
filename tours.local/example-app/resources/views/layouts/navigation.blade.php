@@ -25,6 +25,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/contacts">Contacts</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Authorization</a>
+                </li>
             </ul>
         </div>
     </div>
