@@ -1,5 +1,4 @@
 <?php
-// app/Models/Tag.php
 
 namespace App\Models;
 

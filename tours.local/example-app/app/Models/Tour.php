@@ -1,5 +1,4 @@
 <?php
-// app/Models/Tour.php
 
 namespace App\Models;
 

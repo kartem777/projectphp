@@ -3,10 +3,10 @@
 @section('title', 'Home Page')
 
 @section('content')
-<h1>Name of Company</h1>
+<h1>Fly around the world Agency</h1>
 <div class="row">
     @foreach($tours as $tour)
-        <div class="col-md-3 mb-4"> <!-- Adjust the col-md value to control the width of the cards -->
+        <div class="col-md-3 mb-4">
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title">{{ $tour->title }}</h2>

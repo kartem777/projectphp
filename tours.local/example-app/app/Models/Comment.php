@@ -1,5 +1,4 @@
 <?php
-// app/Models/Comment.php
 
 namespace App\Models;
 

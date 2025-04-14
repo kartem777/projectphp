@@ -1,5 +1,4 @@
 <?php
-// app/Models/Image.php
 
 namespace App\Models;
 
