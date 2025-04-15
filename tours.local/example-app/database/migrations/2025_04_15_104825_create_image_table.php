@@ -11,19 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tours', function (Blueprint $table) {
+        Schema::create('image', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 10, 2);
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('places');
-            $table->string('title');
-            $table->text('description');
-            $table->string('city');
-            $table->string('country');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -31,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tours');
+        Schema::dropIfExists('image');
     }
 };

@@ -9,13 +9,11 @@ class Tour extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'price', 'start_date', 'end_date', 'places', 'title', 'description', 'city', 'country'
-    ];
+    protected $fillable = ['price', 'start', 'end', 'name', 'description', 'city', 'country', 'created_at'];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'start' => 'date',
+        'end' => 'date',
     ];
 
     protected $appends = ['is_hot_offer'];
@@ -33,6 +31,6 @@ class Tour extends Model
     }
 
     public function getIsHotOfferAttribute() {
-        return $this->places < 5 && $this->start_date->diffInDays($this->end_date) <= 3;
+        return $this->start->diffInDays($this->end) <= 3;
     }
 }

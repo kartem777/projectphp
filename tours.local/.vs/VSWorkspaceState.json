@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\example-app",
+    "\\example-app\\app",
+    "\\example-app\\app\\Models",
+    "\\example-app\\database",
+    "\\example-app\\database\\migrations",
+    "\\example-app\\resources",
+    "\\example-app\\resources\\views",
+    "\\example-app\\resources\\views\\layouts",
+    "\\example-app\\routes"
+  ],
+  "SelectedNode": "\\example-app\\.gitignore",
+  "PreviewInSolutionExplorer": false
+}
