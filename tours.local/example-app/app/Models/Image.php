@@ -1,5 +1,4 @@
 <?php
-// app/Models/Image.php
 
 namespace App\Models;
 
@@ -10,9 +9,10 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['imageable_id', 'imageable_type', 'url'];
+    protected $fillable = ['url', 'imageable_id', 'imageable_type'];
 
-    public function imageable() {
+    public function imageable()
+    {
         return $this->morphTo();
     }
 }

@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('phone_number')->nullable();
-            $table->boolean('is_admin')->default(false);
-            $table->rememberToken();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('tour_id')->constrained('tour')->onDelete('cascade');
+            $table->integer('adults_count');
+            $table->integer('children_count');
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('bookings');
     }
 };

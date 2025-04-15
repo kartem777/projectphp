@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tour', function (Blueprint $table) {
+        Schema::create('post', function (Blueprint $table) {
             $table->id();
-            $table->integer('price');
-            $table->timestamp('start');
-            $table->timestamp('end');
-            $table->string('name');
-            $table->text('description');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('city_id')->constrained('city')->onDelete('cascade');
             $table->foreignId('country_id')->constrained('country')->onDelete('cascade');
             $table->foreignId('tag_id')->constrained('tag')->onDelete('cascade');
-            $table->timestamp('created_at');
+            $table->string('title');
+            $table->text('description');
+            $table->timestamps();
         });
-}
+    }
 
 
     /**
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tour');
+        Schema::dropIfExists('post');
     }
 };

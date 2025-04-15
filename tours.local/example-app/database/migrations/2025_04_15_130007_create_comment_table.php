@@ -11,22 +11,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('booking', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('post_id')->constrained('post')->onDelete('cascade');
             $table->foreignId('tour_id')->constrained('tour')->onDelete('cascade');
-            $table->integer('count_of_people');
             $table->text('comment');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('booking');
+        Schema::dropIfExists('comments');
     }
 };

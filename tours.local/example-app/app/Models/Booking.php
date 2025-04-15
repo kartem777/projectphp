@@ -1,5 +1,4 @@
 <?php
-// app/Models/Booking.php
 
 namespace App\Models;
 
@@ -10,7 +9,7 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'tour_id', 'adults_count', 'children_count'];
+    protected $fillable = ['user_id', 'tour_id', 'adults_count', 'children_count', 'comment'];
 
     public function user() {
         return $this->belongsTo(User::class);

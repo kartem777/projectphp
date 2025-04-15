@@ -11,4 +11,9 @@ class Country extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
+
+    public function tours()
+    {
+        return $this->hasMany(Tour::class);
+    }
 }
