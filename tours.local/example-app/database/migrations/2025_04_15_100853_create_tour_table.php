@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('end');
             $table->string('name');
             $table->text('description');
+            $table->integer('places');
             $table->foreignId('city_id')->constrained('city')->onDelete('cascade');
             $table->foreignId('country_id')->constrained('country')->onDelete('cascade');
             $table->foreignId('tag_id')->constrained('tag')->onDelete('cascade');

@@ -10,9 +10,11 @@ class Tag extends Model
 {
     use HasFactory;
 
+    protected $table = 'tag'; 
+
     protected $fillable = ['name'];
 
     public function tours() {
-        return $this->belongsToMany(Tour::class);
+        return $this->hasMany(Tour::class);
     }
 }

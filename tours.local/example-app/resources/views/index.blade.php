@@ -7,13 +7,17 @@
 <div class="row">
     @foreach($tours as $tour)
         <div class="col-md-3 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title">{{ $tour->title }}</h2>
-                    <p class="card-text">{{ $tour->description }}</p>
-                    <p><strong>City:</strong> {{ $tour->city }}, <strong>Country:</strong> {{ $tour->country }}</p>
+            <div class="card h-100">
+                @if($tour->images->isNotEmpty())
+                    <img src="{{ $tour->images->first()->url }}" alt="Tour Image" class="card-img-top" style="max-height: 200px; object-fit: cover;">
+                @endif
+                <div class="card-body d-flex flex-column">
+                    <h2 class="card-title">{{ $tour->name }}</h2>
+                    <p class="card-text">{{ Str::limit($tour->description, 100) }}</p>
+                    <p><strong>City:</strong> {{ $tour->city->name }}, <strong>Country:</strong> {{ $tour->country->name }}</p>
+                    <p><strong>Tag:</strong> {{ $tour->tag->name }}</p>
                     <p><strong>Price:</strong> ${{ $tour->price }}</p>
-                    <p><strong>Dates:</strong> {{ $tour->start_date }} to {{ $tour->end_date }}</p>
+                    <p><strong>Dates:</strong> {{ $tour->formatted_start }} — {{ $tour->formatted_end }}</p>
                     <p><strong>Places left:</strong> {{ $tour->places }}</p>
                     <p>
                         <strong>Hot Offer:</strong>
@@ -23,20 +27,10 @@
                             <span class="text-muted">❄️ Not really</span>
                         @endif
                     </p>
-
-                    <div class="row">
-                        @foreach($tour->images as $index => $image)
-                            @if($index == 0)
-                                <div class="col-12">
-                                    <img src="{{ $image->url }}" alt="Tour Image" class="img-fluid" style="max-height: 200px; object-fit: cover;">
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
+                    <a href="#" class="btn btn-primary mt-auto">View Details</a>
                 </div>
             </div>
         </div>
     @endforeach
 </div>
-
 @endsection

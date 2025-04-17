@@ -10,6 +10,8 @@ class Country extends Model
 {
     use HasFactory;
 
+    protected $table = 'country'; 
+
     protected $fillable = ['name'];
 
     public function tours()
