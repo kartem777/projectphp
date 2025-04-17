@@ -23,7 +23,10 @@
                     <a class="nav-link" href="/hot-tours">Hot Tours</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contacts">Contacts</a>
+                    <a class="nav-link" href="/posts">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/feedback">Feedback</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/home">Authorization</a>

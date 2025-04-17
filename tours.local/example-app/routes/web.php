@@ -3,10 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\TagController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\AuthMiddleware;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,10 +60,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::cla
     Route::put('/tags/{id}', [TagController::class, 'update'])->name('tags.update');
     Route::get('/tags/{id}', [TagController::class, 'show'])->name('tags.show');
     Route::delete('/tags/{id}', [TagController::class, 'destroy'])->name('tags.destroy');
-
-
 });
 
+Route::get('/posts', [PostController::class, 'index'])->name('post.index');
+Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+Route::middleware(['auth', AuthMiddleware::class])->group(function () {
+    Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+});
+
+Route::middleware(['auth', AuthMiddleware::class])->group(function () {
+    Route::get('/posts/create', [PostController::class, 'create'])->name('post.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('post.store');
+});
 
 Auth::routes();
 
