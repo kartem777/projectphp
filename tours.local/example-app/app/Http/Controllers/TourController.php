@@ -1,114 +1,88 @@
 <?php
 
 namespace App\Http\Controllers;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+
 use App\Models\Tour;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Tag;
+use App\Models\Image;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class TourController extends Controller
 {
-    // Display all tours with related city, country, and tag
-   public function allinfo(Request $request)
-{
-    $countries = Country::all();
-    $cities = City::all();
-    $tags = Tag::all();
-    $query = Tour::with(['city', 'country', 'tag']);
+    public function allinfo(Request $request)
+    {
+        $countries = Country::all();
+        $cities = City::all();
+        $tags = Tag::all();
+        $query = Tour::with(['city', 'country', 'tag', 'images']);
 
-    // Apply search filter if provided
-    if ($request->filled('search')) {
-        $searchTerm = $request->search;
-        
-        $query->where(function($q) use ($searchTerm) {
-            $q->where('name', 'like', '%' . $searchTerm . '%')
-                ->orWhereHas('city', function($q) use ($searchTerm) {
-                    $q->where('name', 'like', '%' . $searchTerm . '%');
-                })
-                ->orWhereHas('country', function($q) use ($searchTerm) {
-                    $q->where('name', 'like', '%' . $searchTerm . '%');
-                })
-                ->orWhereHas('tag', function($q) use ($searchTerm) {
-                    $q->where('name', 'like', '%' . $searchTerm . '%');
-                });
-        });
-    }
-
-    // Apply filter by country
-    if ($request->filled('country')) {
-        $country = Country::where('name', $request->country)->first();
-        if ($country) {
-            $query->where('country_id', $country->id);
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhereHas('city', fn($q) => $q->where('name', 'like', "%$searchTerm%"))
+                  ->orWhereHas('country', fn($q) => $q->where('name', 'like', "%$searchTerm%"))
+                  ->orWhereHas('tag', fn($q) => $q->where('name', 'like', "%$searchTerm%"));
+            });
         }
-    }
 
-    // Apply filter by city
-    if ($request->filled('city')) {
-        $city = City::where('name', $request->city)->first();
-        if ($city) {
-            $query->where('city_id', $city->id);
+        if ($request->filled('country')) {
+            $country = Country::where('name', $request->country)->first();
+            if ($country) $query->where('country_id', $country->id);
         }
-    }
 
-    // Apply filter by price range
-    if ($request->filled('price_min') && $request->filled('price_max')) {
-        $query->whereBetween('price', [$request->price_min, $request->price_max]);
-    }
-
-    // Apply filter by tag
-    if ($request->filled('tag')) {
-        $tag = Tag::where('name', $request->tag)->first();
-        if ($tag) {
-            $query->where('tag_id', $tag->id);
+        if ($request->filled('city')) {
+            $city = City::where('name', $request->city)->first();
+            if ($city) $query->where('city_id', $city->id);
         }
+
+        if ($request->filled('price_min') && $request->filled('price_max')) {
+            $query->whereBetween('price', [$request->price_min, $request->price_max]);
+        }
+
+        if ($request->filled('tag')) {
+            $tag = Tag::where('name', $request->tag)->first();
+            if ($tag) $query->where('tag_id', $tag->id);
+        }
+
+        $tours = $query->orderByDesc('id')->get();
+
+        if ($request->filled('hot_offer')) {
+            $tours = $tours->filter(fn($tour) => $tour->is_hot_offer);
+        }
+
+        return view('tours', compact('tours', 'countries', 'cities', 'tags'));
     }
-    // Fetch the filtered results
-    $tours = $query->orderBy('id', 'desc')->get();
 
-    if ($request->filled('hot_offer')) {
-        $tours = $tours->filter(function ($tour) {
-            return $tour->is_hot_offer; // This will call the `getIsHotOfferAttribute` function
-        });
-    }
-
-    return view('tours', compact('tours', 'countries', 'cities', 'tags'));
-}
-
-
-    // Display all tours for admin with related city, country, and tag
     public function allinfoadmin()
     {
-        $tours = Tour::with(['city', 'country', 'tag'])->get();
+        $tours = Tour::with(['city', 'country', 'tag', 'images'])->get();
         return view('admin.tours.index', compact('tours'));
     }
 
-    // Display the latest 3 tours on the homepage
     public function home()
     {
-        $tours = Tour::with(['city', 'country', 'tag'])
-            ->orderBy('id', 'desc')
-            ->take(3)
-            ->get();
+        $tours = Tour::with(['city', 'country', 'tag', 'images'])
+                     ->orderByDesc('id')
+                     ->take(3)
+                     ->get();
         return view('index', compact('tours'));
     }
 
-    // Show the form to create a new tour
     public function create()
     {
-        // Fetch cities, countries, and tags to populate the select fields
         $cities = City::all();
         $countries = Country::all();
         $tags = Tag::all();
-        
         return view('admin.tours.create', compact('cities', 'countries', 'tags'));
     }
 
-    // Store a newly created tour
     public function store(Request $request)
     {
-        // Validate the incoming data
         $request->validate([
             'price' => 'required|numeric',
             'start' => 'required|date',
@@ -119,26 +93,17 @@ class TourController extends Controller
             'city' => 'required|string',
             'country' => 'required|string',
             'tag' => 'required|string',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:10240'
         ]);
 
-        // Retrieve city, country, and tag by name
-        $city = City::where('name', $request->city)->first();
-        $country = Country::where('name', $request->country)->first();
-        $tag = Tag::where('name', $request->tag)->first();
+        $city = City::where('name', $request->city)->firstOrFail();
+        $country = Country::where('name', $request->country)->firstOrFail();
+        $tag = Tag::where('name', $request->tag)->firstOrFail();
 
-        // If any of the entities are not found, redirect back with error
-        if (!$city || !$country || !$tag) {
-            return redirect()->back()->withErrors('City, Country, or Tag not found!');
-        }
-
-        $start = Carbon::parse($request->start)->format('Y-m-d');
-        $end = Carbon::parse($request->end)->format('Y-m-d');
-
-        // Create the tour with the validated data
-        Tour::create([
+        $tour = Tour::create([
             'price' => $request->price,
-            'start' => $start,
-            'end' => $end,
+            'start' => Carbon::parse($request->start)->format('Y-m-d'),
+            'end' => Carbon::parse($request->end)->format('Y-m-d'),
             'places' => $request->places,
             'name' => $request->name,
             'description' => $request->description,
@@ -147,81 +112,105 @@ class TourController extends Controller
             'tag_id' => $tag->id,
         ]);
 
-        // Redirect with success message
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $uploadedImage) {
+                $path = $uploadedImage->store('images', 'public');
+                $tour->images()->create([
+                    'url' => 'storage/' . $path,
+                ]);
+            }
+        }
+
         return redirect()->route('admin.tours.index')->with('success', 'Tour created successfully!');
     }
 
-    // Show the form to edit an existing tour
     public function edit($id)
     {
-        $tour = Tour::findOrFail($id); // Fetch the tour by its ID
+        $tour = Tour::findOrFail($id);
         $cities = City::all();
         $countries = Country::all();
         $tags = Tag::all();
-        
-        // Pass the tour and other data to the view
         return view('admin.tours.edit', compact('tour', 'cities', 'countries', 'tags'));
     }
 
-    // Update an existing tour
-    public function update(Request $request, $id)
-    {
-        // Validate the incoming data
-        $request->validate([
-            'price' => 'required|numeric',
-            'start' => 'required|date',
-            'end' => 'required|date',
-            'places' => 'required|integer',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'city' => 'required|string',
-            'country' => 'required|string',
-            'tag' => 'required|string',
-        ]);
+   public function update(Request $request, $id)
+{
+    $request->validate([
+        'price' => 'required|numeric',
+        'start' => 'required|date',
+        'end' => 'required|date',
+        'places' => 'required|integer',
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'city' => 'required|string',
+        'country' => 'required|string',
+        'tag' => 'required|string',
+        'images.*' => 'image|mimes:jpeg,png,jpg|max:10240'
+    ]);
 
-        // Retrieve city, country, and tag by name
-        $city = City::where('name', $request->city)->first();
-        $country = Country::where('name', $request->country)->first();
-        $tag = Tag::where('name', $request->tag)->first();
+    $tour = Tour::findOrFail($id);
+    $city = City::where('name', $request->city)->firstOrFail();
+    $country = Country::where('name', $request->country)->firstOrFail();
+    $tag = Tag::where('name', $request->tag)->firstOrFail();
 
-        // If any of the entities are not found, redirect back with error
-        if (!$city || !$country || !$tag) {
-            return redirect()->back()->withErrors('City, Country, or Tag not found!');
+    $tour->update([
+        'price' => $request->price,
+        'start' => $request->start,
+        'end' => $request->end,
+        'places' => $request->places,
+        'name' => $request->name,
+        'description' => $request->description,
+        'city_id' => $city->id,
+        'country_id' => $country->id,
+        'tag_id' => $tag->id,
+    ]);
+
+    if ($request->hasFile('images')) {
+        // Remove images that are no longer included in the request
+        foreach ($tour->images as $index => $oldImage) {
+            if (!in_array($oldImage->url, $request->images ?? [])) {
+                // Delete the old image from storage
+                Storage::disk('public')->delete(str_replace('storage/', '', $oldImage->url));
+                $oldImage->delete();
+            }
         }
 
-        // Find the tour by ID and update it with the new data
-        $tour = Tour::findOrFail($id);
-        $tour->update([
-            'price' => $request->price,
-            'start' => $request->start,
-            'end' => $request->end,
-            'places' => $request->places,
-            'name' => $request->name,
-            'description' => $request->description,
-            'city_id' => $city->id,
-            'country_id' => $country->id,
-            'tag_id' => $tag->id,
-        ]);
-
-        // Redirect with success message
-        return redirect()->route('admin.tours.index')->with('success', 'Tour updated successfully!');
+        // Add new images
+        foreach ($request->file('images') as $uploadedImage) {
+            $path = $uploadedImage->store('images', 'public');
+            $tour->images()->create([
+                'url' => 'storage/' . $path,
+            ]);
+        }
     }
 
-    // Delete a tour
+    return redirect()->route('admin.tours.index')->with('success', 'Tour updated successfully!');
+}
+
+
     public function destroy($id)
     {
         $tour = Tour::findOrFail($id);
+        foreach ($tour->images as $image) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $image->url));
+            $image->delete();
+        }
         $tour->delete();
-        
-        // Redirect with success message
-        return redirect()->route('admin.tours.index')->with('success', 'Tour deleted successfully!');
+
+        return redirect()->route('admin.tours.index')->with('success', 'Tour and related images deleted!');
     }
 
-    // Show the details of a tour
     public function show($id)
     {
-        $tour = Tour::with(['city', 'country', 'tag'])->findOrFail($id);
-        
+        $tour = Tour::with(['city', 'country', 'tag', 'images'])->findOrFail($id);
         return view('admin.tours.show', compact('tour'));
     }
+
+    public function showuser($id)
+    {
+        $tour = Tour::with(['city', 'country', 'tag', 'images'])->findOrFail($id);
+        return view('tourdetails', compact('tour'));
+    }
+
+
 }

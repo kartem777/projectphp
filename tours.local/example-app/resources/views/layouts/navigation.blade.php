@@ -20,7 +20,7 @@
                     <a class="nav-link" href="/tours">Tours</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/hot-tours">Hot Tours</a>
+                    <a class="nav-link" href="/tours?search=&hot_offer=1&country=&city=&price_min=&price_max=&tag=">Hot Tours</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/posts">Posts</a>

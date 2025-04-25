@@ -89,7 +89,7 @@
                         @endif
                     </p>
                     <div class="mt-auto">
-                        <a href="#" class="btn btn-primary">View Details</a>
+                        <a href="{{ route('tourdetails', $tour->id) }}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
             </div>

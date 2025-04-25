@@ -8,6 +8,8 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AuthMiddleware;
 /*
@@ -25,9 +27,22 @@ Route::get('/', [TourController::class, 'home']);
 Route::get('/documentation', function () {
     return view('welcome');
 });
+Route::get('/tours/{id}', [TourController::class, 'showuser'])->name('tourdetails');
+
 Route::get('/tours', [TourController::class, 'allinfo'])->name('tours.basic');
+Route::get('/image-upload', [ImageController::class, 'showUploadForm'])->name('image.upload.form');
+Route::post('/image-upload', [ImageController::class, 'upload'])->name('image.upload');
+Route::delete('/image-delete/{id}', [ImageController::class, 'delete'])->name('image.delete');
 Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+
+    Route::get('/users/index', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     Route::get('/tours/index', [TourController::class, 'allinfoadmin'])->name('tours.index');
     Route::get('/tours/create', [TourController::class, 'create'])->name('tours.create');

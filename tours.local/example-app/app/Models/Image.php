@@ -15,4 +15,8 @@ class Image extends Model
     {
         return $this->morphTo();
     }
+    public function tour()
+    {
+        return $this->belongsTo(Tour::class);
+    }
 }

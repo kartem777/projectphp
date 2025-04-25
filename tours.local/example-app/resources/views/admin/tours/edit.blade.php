@@ -1,58 +1,92 @@
 @extends('layouts.navigationadmin')
 
 @section('content')
-    <div class="container mt-5">
-        <h1>Edit Tour</h1>
-        <form action="{{ route('admin.tours.update', $tour->id) }}" method="POST">
-            @csrf
-            @method('PUT')
+<div class="container">
+    <h2 class="mb-4">Edit Tour</h2>
 
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" value="{{ old('name', $tour->name) }}" class="form-control" required>
+    <form action="{{ route('admin.tours.update', $tour->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+
+        {{-- Tour Info Fields --}}
+        <div class="mb-3"><label class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" value="{{ $tour->name }}" required>
+        </div>
+
+        <div class="mb-3"><label class="form-label">Price</label>
+            <input type="number" name="price" class="form-control" value="{{ $tour->price }}" required>
+        </div>
+
+        <div class="mb-3"><label class="form-label">Start Date</label>
+            <input type="date" name="start" class="form-control" value="{{ $tour->start }}" required>
+        </div>
+
+        <div class="mb-3"><label class="form-label">End Date</label>
+            <input type="date" name="end" class="form-control" value="{{ $tour->end }}" required>
+        </div>
+
+        <div class="mb-3"><label class="form-label">Places</label>
+            <input type="number" name="places" class="form-control" value="{{ $tour->places }}" required>
+        </div>
+
+        <div class="mb-3"><label class="form-label">Description</label>
+            <textarea name="description" class="form-control">{{ $tour->description }}</textarea>
+        </div>
+
+        {{-- Dropdowns --}}
+        <div class="mb-3"><label class="form-label">City</label>
+            <select name="city" class="form-control" required>
+                @foreach($cities as $city)
+                    <option value="{{ $city->name }}" {{ $tour->city_id === $city->id ? 'selected' : '' }}>
+                        {{ $city->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3"><label class="form-label">Country</label>
+            <select name="country" class="form-control" required>
+                @foreach($countries as $country)
+                    <option value="{{ $country->name }}" {{ $tour->country_id === $country->id ? 'selected' : '' }}>
+                        {{ $country->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3"><label class="form-label">Tag</label>
+            <select name="tag" class="form-control" required>
+                @foreach($tags as $tag)
+                    <option value="{{ $tag->name }}" {{ $tour->tag_id === $tag->id ? 'selected' : '' }}>
+                        {{ $tag->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Current Images --}}
+        <hr>
+        <div class="mb-3">
+            <label class="form-label">Current Images</label>
+            <div class="d-flex flex-wrap gap-3">
+                @foreach($tour->images as $image)
+                    <div class="position-relative">
+                        <img src="{{ asset($image->url) }}" width="140" height="100" class="rounded border">
+                    </div>
+                @endforeach
             </div>
+        </div>
 
+        @for ($i = 0; $i < 5; $i++)
             <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input type="number" step="0.01" name="price" value="{{ old('price', $tour->price) }}" class="form-control" required>
+                <label for="image-upload-{{ $i }}" class="form-label">Upload Image {{ $i + 1 }}</label>
+                <input type="file" name="images[]" class="form-control"
+                       accept="image/png, image/jpeg, image/jpg" id="image-upload-{{ $i }}">
             </div>
+        @endfor
 
-            <div class="mb-3">
-                <label for="start" class="form-label">Start Date</label>
-                <input type="date" name="start" value="{{ old('start', \Carbon\Carbon::parse($tour->start)->format('Y-m-d')) }}" class="form-control" required>
-            </div>
+        <button type="submit" class="btn btn-primary mt-3">Update Tour</button>
+    </form>
+</div>
 
-            <div class="mb-3">
-                <label for="end" class="form-label">End Date</label>
-                <input type="date" name="end" value="{{ old('end', \Carbon\Carbon::parse($tour->end)->format('Y-m-d')) }}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="places" class="form-label">Places</label>
-                <input type="number" name="places" value="{{ old('places', $tour->places) }}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="description" class="form-control">{{ old('description', $tour->description) }}</textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="city" class="form-label">City</label>
-                <input type="text" name="city" value="{{ old('city', $tour->city->name ?? '') }}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="country" class="form-label">Country</label>
-                <input type="text" name="country" value="{{ old('country', $tour->country->name ?? '') }}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="tag" class="form-label">Tag</label>
-                <input type="text" name="tag" value="{{ old('tag', $tour->tag->name ?? '') }}" class="form-control" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Update Tour</button>
-        </form>
-    </div>
 @endsection

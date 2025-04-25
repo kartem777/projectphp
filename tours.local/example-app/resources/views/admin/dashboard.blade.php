@@ -56,13 +56,14 @@
                 <div class="col-md-6">
                     <h3>Dashboard</h3>
                     <ul class="list-group">
-                        <li class="list-group-item"><a href="#">Manage Users</a></li>
+                        <li class="list-group-item"><a href="/admin/users/index">Manage Users</a></li>
                         <li class="list-group-item"><a href="#">Manage Posts</a></li>
                         <li class="list-group-item"><a href="/admin/tours/index">Manage Tours</a></li>
                         <li class="list-group-item"><a href="#">Manage Feedbacks</a></li>
                         <li class="list-group-item"><a href="/admin/cities/index">Manage Cities</a></li>
                         <li class="list-group-item"><a href="/admin/countries/index">Manage Countries</a></li>
                         <li class="list-group-item"><a href="/admin/tags/index">Manage Tags</a></li>
+                        <li class="list-group-item"><a href="#">Manage Bookings</a></li>
                     </ul>
                 </div>
 
@@ -115,6 +116,13 @@
                             <div class="stat-card">
                                 <h4>Tag Count</h4>
                                 <p>{{ $tagCount }} tags</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <h4>Booking Count</h4>
+                                <p>0 bookings</p>
                             </div>
                         </div>
                     </div>

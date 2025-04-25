@@ -1,4 +1,4 @@
-@extends('layouts.navigationadmin')
+@extends('layouts.navigation')
 
 @section('content')
     <div class="container mt-5">
@@ -31,13 +31,7 @@
         </div>
 
         <div class="mt-4">
-            <a href="{{ route('admin.tours.edit', $tour->id) }}" class="btn btn-warning">Edit Tour</a>
-
-            <form action="{{ route('admin.tours.destroy', $tour->id) }}" method="POST" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+            <a href="#" class="btn btn-warning">Book Tour</a>
         </div>
     </div>
 @endsection

@@ -27,7 +27,7 @@
                             <span class="text-muted">❄️ Not really</span>
                         @endif
                     </p>
-                    <a href="#" class="btn btn-primary mt-auto">View Details</a>
+                    <a href="{{ route('tourdetails', $tour->id) }}" class="btn btn-primary mt-auto">View Details</a>
                 </div>
             </div>
         </div>
