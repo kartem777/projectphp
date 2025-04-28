@@ -37,7 +37,7 @@
         </div>
 
         <div class="form-group">
-            <label for="city_id">Тег</label>
+            <label for="tag_id">Тег</label>
             <select class="form-control" id="tag_id" name="tag_id" required>
                 <option value="">Оберіть місто</option>
                 @foreach($tags as $tag)

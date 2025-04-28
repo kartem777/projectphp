@@ -18,7 +18,7 @@ class TourController extends Controller
         $countries = Country::all();
         $cities = City::all();
         $tags = Tag::all();
-        $query = Tour::with(['city', 'country', 'tag', 'images']);
+        $query = Tour::with(['city', 'country', 'tag', 'images']); // <--- тут змінив tours на query
 
         if ($request->filled('search')) {
             $searchTerm = $request->search;
@@ -57,6 +57,7 @@ class TourController extends Controller
 
         return view('tours', compact('tours', 'countries', 'cities', 'tags'));
     }
+
 
     public function allinfoadmin()
     {

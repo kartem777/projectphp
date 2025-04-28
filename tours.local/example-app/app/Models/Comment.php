@@ -12,6 +12,11 @@ class Comment extends Model
 
     protected $fillable = ['user_id', 'post_id', 'tour_id', 'comment'];
 
+    protected $casts = [
+        'post_id' => 'integer',
+        'tour_id' => 'integer', // може бути null, якщо ви збережете значення NULL
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }

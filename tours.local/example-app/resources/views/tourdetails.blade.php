@@ -31,7 +31,7 @@
         </div>
 
         <div class="mt-4">
-            <a href="#" class="btn btn-warning">Book Tour</a>
+            <a href="{{ route('bookings.create', $tour->id) }}" class="btn btn-warning">Book Tour</a>
         </div>
     </div>
 @endsection

@@ -10,8 +10,10 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Controllers\BookingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -81,14 +83,34 @@ Route::get('/posts', [PostController::class, 'index'])->name('post.index');
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 Route::middleware(['auth', AuthMiddleware::class])->group(function () {
     Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/my_posts', [PostController::class, 'myPost'])->name('post.myPosts');
+    Route::post('/my_posts', [PostController::class, 'store'])->name('post.store');
+    Route::get('/posts/{id}/edit', [PostController::class, 'edit'])->name('post.edit');
+    Route::put('/posts/{id}', [PostController::class, 'update'])->name('post.update');
+    Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('post.destroy');
+});
+
+Route::middleware(['auth', AuthMiddleware::class])->group(function() {
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 Route::middleware(['auth', AuthMiddleware::class])->group(function () {
-    Route::get('/posts/create', [PostController::class, 'create'])->name('post.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('post.store');
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+});
+
+Route::middleware(['auth', AuthMiddleware::class])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('tours/{tour}/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('tours/{tour}/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+    Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

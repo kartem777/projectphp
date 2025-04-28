@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Booking;
+use App\Models\User;
+use App\Models\Tour;
+
 
 class HomeController extends Controller
 {
@@ -23,6 +27,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $bookings = auth()->user()->bookings()->with('tour')->get();
+        return view('home', compact('bookings'));
     }
+
 }
