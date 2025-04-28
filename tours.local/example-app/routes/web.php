@@ -80,7 +80,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::cla
 });
 
 Route::get('/posts', [PostController::class, 'index'])->name('post.index');
-Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 Route::middleware(['auth', AuthMiddleware::class])->group(function () {
     Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
     Route::get('/my_posts', [PostController::class, 'myPost'])->name('post.myPosts');
@@ -89,6 +88,7 @@ Route::middleware(['auth', AuthMiddleware::class])->group(function () {
     Route::put('/posts/{id}', [PostController::class, 'update'])->name('post.update');
     Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('post.destroy');
 });
+Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 
 Route::middleware(['auth', AuthMiddleware::class])->group(function() {
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');

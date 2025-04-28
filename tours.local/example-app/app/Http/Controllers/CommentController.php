@@ -20,7 +20,6 @@ class CommentController extends Controller
             'comment' => $data['comment'],
             'post_id' => $data['post_id'],
             'user_id' => auth()->id(),
-            'tour_id' => null,
         ]);
 
         return redirect()->back();
