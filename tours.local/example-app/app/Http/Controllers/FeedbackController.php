@@ -12,6 +12,10 @@ class FeedbackController extends Controller
         $feedbacks = Feedback::with('user')->latest()->get();
         return view('feedback.index', compact('feedbacks'));
     }
+    public function indexadmin() {
+        $feedbacks = Feedback::with('user')->latest()->get();
+        return view('admin.feedbacks.index', compact('feedbacks'));
+    }
 
     public function store(Request $request) {
         $request->validate([
@@ -25,5 +29,11 @@ class FeedbackController extends Controller
 
         return redirect()->back()->with('success', 'Ми отримали ваш лист!');
     }
+    public function destroy($id)
+    {
+        $feedback = Feedback::findOrFail($id);
+        $feedback->delete();
 
+        return redirect()->route('admin.feedbacks.index')->with('success', 'Відгук видалено успішно.');
+    }
 }

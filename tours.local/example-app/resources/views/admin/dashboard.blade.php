@@ -59,11 +59,11 @@
                         <li class="list-group-item"><a href="/admin/users/index">Manage Users</a></li>
                         <li class="list-group-item"><a href="#">Manage Posts</a></li>
                         <li class="list-group-item"><a href="/admin/tours/index">Manage Tours</a></li>
-                        <li class="list-group-item"><a href="#">Manage Feedbacks</a></li>
+                        <li class="list-group-item"><a href="/admin/feedbacks/index">Manage Feedbacks</a></li>
                         <li class="list-group-item"><a href="/admin/cities/index">Manage Cities</a></li>
                         <li class="list-group-item"><a href="/admin/countries/index">Manage Countries</a></li>
                         <li class="list-group-item"><a href="/admin/tags/index">Manage Tags</a></li>
-                        <li class="list-group-item"><a href="#">Manage Bookings</a></li>
+                        <li class="list-group-item"><a href="/admin/bookings/index">Manage Bookings</a></li>
                     </ul>
                 </div>
 
@@ -122,7 +122,7 @@
                         <div class="col-md-6">
                             <div class="stat-card">
                                 <h4>Booking Count</h4>
-                                <p>0 bookings</p>
+                                <p>{{ $bookingCount }} bookings</p>
                             </div>
                         </div>
                     </div>

@@ -10,6 +10,7 @@ use App\Models\Feedback;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Tag;
+use App\Models\Booking;
 class AdminController extends Controller
 {
      public function index()
@@ -21,7 +22,8 @@ class AdminController extends Controller
         $cityCount = City::count() ?? 0;
         $countryCount = Country::count() ?? 0;
         $tagCount = Tag::count() ?? 0;
+        $bookingCount = Booking::count() ?? 0;
 
-        return view('admin.dashboard', compact('tourCount', 'userCount', 'postCount', 'feedbackCount', 'cityCount', 'countryCount', 'tagCount'));
+        return view('admin.dashboard', compact('tourCount', 'userCount', 'postCount', 'feedbackCount', 'cityCount', 'countryCount', 'tagCount', 'bookingCount'));
     }
 }

@@ -14,49 +14,52 @@ use Carbon\Carbon;
 class TourController extends Controller
 {
     public function allinfo(Request $request)
-    {
-        $countries = Country::all();
-        $cities = City::all();
-        $tags = Tag::all();
-        $query = Tour::with(['city', 'country', 'tag', 'images']); // <--- тут змінив tours на query
+{
+    $countries = Country::all();
+    $cities = City::all();
+    $tags = Tag::all();
+    $query = Tour::with(['city', 'country', 'tag', 'images']);
 
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%')
-                  ->orWhereHas('city', fn($q) => $q->where('name', 'like', "%$searchTerm%"))
-                  ->orWhereHas('country', fn($q) => $q->where('name', 'like', "%$searchTerm%"))
-                  ->orWhereHas('tag', fn($q) => $q->where('name', 'like', "%$searchTerm%"));
-            });
-        }
-
-        if ($request->filled('country')) {
-            $country = Country::where('name', $request->country)->first();
-            if ($country) $query->where('country_id', $country->id);
-        }
-
-        if ($request->filled('city')) {
-            $city = City::where('name', $request->city)->first();
-            if ($city) $query->where('city_id', $city->id);
-        }
-
-        if ($request->filled('price_min') && $request->filled('price_max')) {
-            $query->whereBetween('price', [$request->price_min, $request->price_max]);
-        }
-
-        if ($request->filled('tag')) {
-            $tag = Tag::where('name', $request->tag)->first();
-            if ($tag) $query->where('tag_id', $tag->id);
-        }
-
-        $tours = $query->orderByDesc('id')->get();
-
-        if ($request->filled('hot_offer')) {
-            $tours = $tours->filter(fn($tour) => $tour->is_hot_offer);
-        }
-
-        return view('tours', compact('tours', 'countries', 'cities', 'tags'));
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+        $query->where(function($q) use ($searchTerm) {
+            $q->where('name', 'like', '%' . $searchTerm . '%')
+              ->orWhereHas('city', fn($q) => $q->where('name', 'like', "%$searchTerm%"))
+              ->orWhereHas('country', fn($q) => $q->where('name', 'like', "%$searchTerm%"))
+              ->orWhereHas('tag', fn($q) => $q->where('name', 'like', "%$searchTerm%"));
+        });
     }
+
+    if ($request->filled('country')) {
+        $country = Country::where('name', $request->country)->first();
+        if ($country) $query->where('country_id', $country->id);
+    }
+
+    if ($request->filled('city')) {
+        $city = City::where('name', $request->city)->first();
+        if ($city) $query->where('city_id', $city->id);
+    }
+
+    if ($request->filled('price_min') && $request->filled('price_max')) {
+        $query->whereBetween('price', [$request->price_min, $request->price_max]);
+    }
+
+    if ($request->filled('tag')) {
+        $tag = Tag::where('name', $request->tag)->first();
+        if ($tag) $query->where('tag_id', $tag->id);
+    }
+
+    $tours = $query->orderByDesc('id')->get();
+
+    if ($request->filled('hot_offer')) {
+        $tours = $tours->filter(fn($tour) => $tour->is_hot_offer);
+    }
+
+    $tours = $tours->filter(fn($tour) => $tour->places > 0);
+
+    return view('tours', compact('tours', 'countries', 'cities', 'tags'));
+}
+
 
 
     public function allinfoadmin()
@@ -69,10 +72,26 @@ class TourController extends Controller
     {
         $tours = Tour::with(['city', 'country', 'tag', 'images'])
                      ->orderByDesc('id')
-                     ->take(3)
                      ->get();
+
+        $tours = $tours->filter(fn($tour) => $tour->places > 0);
+
+        if ($tours->count() < 3) {
+            $additionalTours = Tour::with(['city', 'country', 'tag', 'images'])
+                                   ->orderByDesc('id')
+                                   ->take(3 - $tours->count())
+                                   ->get();
+
+            $additionalTours = $additionalTours->filter(fn($tour) => $tour->places > 0);
+
+            $tours = $tours->merge($additionalTours);
+        }
+
+        $tours = $tours->take(3);
+
         return view('index', compact('tours'));
     }
+
 
     public function create()
     {

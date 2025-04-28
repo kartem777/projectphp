@@ -77,6 +77,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', AdminMiddleware::cla
     Route::put('/tags/{id}', [TagController::class, 'update'])->name('tags.update');
     Route::get('/tags/{id}', [TagController::class, 'show'])->name('tags.show');
     Route::delete('/tags/{id}', [TagController::class, 'destroy'])->name('tags.destroy');
+
+    Route::get('bookings/index', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+    Route::put('bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+    Route::delete('bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+    Route::get('bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+
+    Route::get('/feedbacks/index', [FeedbackController::class, 'indexadmin'])->name('feedbacks.index');
+    Route::delete('feedbacks/{feedback}', [FeedbackController::class, 'destroy'])->name('feedbacks.destroy');
 });
 
 Route::get('/posts', [PostController::class, 'index'])->name('post.index');
