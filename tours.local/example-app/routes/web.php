@@ -100,7 +100,9 @@ Route::middleware(['auth', AuthMiddleware::class])->group(function () {
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 
 Route::middleware(['auth', AuthMiddleware::class])->group(function() {
-    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments_post', [CommentController::class, 'store_post'])->name('comments_post.store');
+    Route::post('/comments_comment', [CommentController::class, 'store_comment'])->name('comments_comment.store');
+    Route::post('/comments_tour', [CommentController::class, 'store_tour'])->name('comments_tour.store');
     Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
