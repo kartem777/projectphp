@@ -42,12 +42,17 @@
 <!-- Невеличкий JavaScript для відкриття/закриття форми відповіді -->
 <script>
     function toggleReplyForm(commentId) {
-        const form = document.getElementById('reply-form-' + commentId);
-        if (form.style.display === 'none') {
-            form.style.display = 'block';
-        } else {
-            form.style.display = 'none';
-        }
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
+        replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleEditForm(commentId) {
+        const textBlock = document.getElementById(`comment-text-${commentId}`);
+        const editForm = document.getElementById(`edit-form-${commentId}`);
+        const isHidden = editForm.style.display === 'none';
+
+        editForm.style.display = isHidden ? 'block' : 'none';
+        textBlock.style.display = isHidden ? 'none' : 'block';
     }
 </script>
 @endsection

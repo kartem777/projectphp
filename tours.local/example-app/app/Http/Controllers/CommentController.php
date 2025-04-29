@@ -84,7 +84,7 @@ class CommentController extends Controller
             'body' => 'required|string|max:1000',
         ]);
 
-        $comment->update(['body' => $data['body']]);
+        $comment->update(['comment' => $data['body']]);
         // Повертаємось до сторінки посту (наприклад)
         return redirect()->back();
     }

@@ -1,21 +1,38 @@
-{{-- resources/views/comments/partials/comment.blade.php --}}
-<div class="card my-2">
+<div class="card my-2" id="comment-{{ $comment->id }}">
     <div class="card-body">
-        <p class="card-text">{{ $comment->comment }}</p>
-        <small class="text-muted">
-            {{ $comment->user->name }} |
-            {{ $comment->created_at->format('d.m.Y H:i') }}
-        </small>
 
-        @if(auth()->check() && auth()->id() == $comment->user_id)
-            <a href="{{ route('comments.edit', $comment) }}" class="btn btn-sm btn-secondary">Редагувати</a>
-            <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="d-inline">
+        {{-- Відображення коментаря --}}
+        <div id="comment-text-{{ $comment->id }}">
+            <p class="card-text">{{ $comment->comment }}</p>
+            <small class="text-muted">
+                {{ $comment->user->name }} |
+                {{ $comment->created_at->format('d.m.Y H:i') }}
+            </small>
+
+            @if(auth()->check() && auth()->id() == $comment->user_id)
+                <button class="btn btn-sm btn-secondary" onclick="toggleEditForm({{ $comment->id }})">Редагувати</button>
+                <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
+                </form>
+            @endif
+        </div>
+
+        {{-- Форма редагування --}}
+        <div id="edit-form-{{ $comment->id }}" style="display: none;">
+            <form action="{{ route('comments.update', $comment) }}" method="POST">
                 @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
+                @method('PUT')
+                <div class="mb-2">
+                    <textarea name="body" class="form-control" rows="3" required>{{ $comment->comment }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-sm btn-success">Зберегти</button>
+                <button type="button" class="btn btn-sm btn-link" onclick="toggleEditForm({{ $comment->id }})">Скасувати</button>
             </form>
-        @endif
+        </div>
 
+        {{-- Відповісти --}}
         @auth
             <button class="btn btn-sm btn-primary mt-2" onclick="toggleReplyForm({{ $comment->id }})">
                 Відповісти
@@ -24,7 +41,6 @@
             <div id="reply-form-{{ $comment->id }}" class="mt-3" style="display: none;">
                 <form action="{{ route('comments_comment.store') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="parent_id" value="{{ $comment->id }}">
                     <input type="hidden" name="comment_id" value="{{ $comment->id }}">
                     <div class="mb-2">
                         <textarea name="comment" class="form-control" rows="2" placeholder="Ваша відповідь..." required></textarea>
@@ -34,9 +50,10 @@
                 </form>
             </div>
         @endauth
+
     </div>
 
-    {{-- Рекурсивно показуємо відповіді --}}
+    {{-- Вкладені коментарі --}}
     @if($comment->replies)
         <div class="ms-4">
             @foreach($comment->replies as $reply)
@@ -45,3 +62,5 @@
         </div>
     @endif
 </div>
+
+

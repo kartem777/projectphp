@@ -58,9 +58,6 @@ class Tour extends Model
         return $this->start ? $this->start->format('Y-m-d') : 'No start date available';
     }
 
-    /**
-     * Accessor for formatted end date
-     */
     public function getFormattedEndAttribute()
     {
         return $this->end ? $this->end->format('Y-m-d') : 'No start date available';
