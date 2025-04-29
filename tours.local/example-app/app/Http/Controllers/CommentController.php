@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-        // Зберігаємо новий коментар
-    public function store(Request $request)
+    public function store_post(Request $request)
     {
         $data = $request->validate([
             'comment' => 'required|string|max:1000',
@@ -20,6 +19,42 @@ class CommentController extends Controller
             'comment' => $data['comment'],
             'post_id' => $data['post_id'],
             'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function store_tour(Request $request)
+    {
+        $data = $request->validate([
+            'comment' => 'required|string|max:1000',
+            'tour_id' => 'required|exists:tour,id',
+        ]);
+
+        Comment::create([
+            'comment' => $data['comment'],
+            'tour_id' => $data['tour_id'],
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function store_comment(Request $request)
+    {
+        $data = $request->validate([
+            'comment' => 'required|string|max:1000',
+            'comment_id' => 'required|exists:comments,id',
+        ]);
+
+        $parentComment = Comment::findOrFail($data['comment_id']);
+
+        Comment::create([
+            'comment' => $data['comment'],
+            'comment_id' => $parentComment->id,
+            'user_id' => auth()->id(),
+            'post_id' => $parentComment->post_id,
+            'tour_id' => $parentComment->tour_id,
         ]);
 
         return redirect()->back();

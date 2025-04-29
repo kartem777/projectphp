@@ -45,9 +45,13 @@ class Tour extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
     public function getIsHotOfferAttribute()
     {
-        return $this->start->diffInDays($this->end) <= 3;
+        return $this->start->diffInDays($this->end) <= 3 || $this->places <= 10;
     }
      public function getFormattedStartAttribute()
     {
