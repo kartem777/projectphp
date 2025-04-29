@@ -39,7 +39,6 @@ class BookingController extends Controller
 
         $tour->places -= $totalPeople;
         $tour->save();
-
         return redirect()->route('home')->with('success', 'Tour successfully booked!');
     }
 
@@ -70,7 +69,6 @@ class BookingController extends Controller
 
         $tour->places += $oldTotalPeople - $totalPeople;
         $tour->save();
-
         $redirectRoute = strpos(url()->previous(), route('admin.bookings.edit', $booking->id)) === 0
             ? route('admin.bookings.index')
             : route('home');
@@ -84,7 +82,6 @@ class BookingController extends Controller
         $tour = $booking->tour;
         $tour->places += $booking->adults_count + $booking->children_count;
         $tour->save();
-
         $booking->delete();
 
         return redirect()->back()->with('success', 'Booking cancelled successfully.');

@@ -47,7 +47,8 @@ class Tour extends Model
 
     public function getIsHotOfferAttribute()
     {
-        return $this->start->diffInDays($this->end) <= 3;
+        return $this->start->diffInDays($this->end) <= 3
+        || $this->places <= 10;
     }
      public function getFormattedStartAttribute()
     {
